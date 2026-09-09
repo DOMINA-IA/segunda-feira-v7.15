@@ -111,6 +111,24 @@ consolidou continuariam carregando junto com as 5 novas (contexto **maior**
 que antes), e o `settings.json` antigo ficaria sem o router registrado — com
 o CORTEX e as heurísticas no disco sem nunca chegarem ao modelo.
 
+### Ou: adotar só o que interessa
+
+Se você customizou bastante e prefere escolher, comece pelo diagnóstico:
+
+```bash
+bash diagnostico.sh
+```
+
+Ele não altera nada — compara a sua instalação com a v7.15 e lista o que
+adotar **em ordem de impacto real**, com o número de cada coisa medido no seu
+ambiente (quantas palavras você carrega por sessão, quantas skills custam
+contexto sem carregar, o que é seu e não pode se perder).
+
+A ordem surpreende: o que muda o funcionamento é o motor, e ele é pequeno.
+Dá para copiar todos os agentes novos e continuar sem framework nenhum, se o
+`router.py` não estiver registrado no `settings.json` — aí o CORTEX e as
+heurísticas ficam no disco sem nunca chegar ao modelo.
+
 O `upgrade.sh` faz backup de tudo, remove só o que virou obsoleto, mescla o
 `settings.json` preservando as suas permissões, e **verifica se o motor ficou
 ligado** — não apenas se os arquivos foram copiados. Sua memória (vault,
