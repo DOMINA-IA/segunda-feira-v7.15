@@ -1,0 +1,198 @@
+{
+  "_comentario": "Segunda-feira — permissões do Claude Code para o aluno. Copie para ~/.claude/settings.json (global) ou <projeto>/.claude/settings.json (só naquele projeto). Sem este arquivo o Claude Code fica no modo padrão e pede confirmação a cada ação. Três níveis: troque 'defaultMode' conforme o seu conforto. 'deny' vale em qualquer nível.",
+  "_modelo": "Sem esta linha o Claude Code usa o modelo mais caro por padrao. Trabalho mecanico (editar arquivo, rodar comando, refatorar) roda bem em sonnet; troque para opus pontualmente com /model opus quando precisar de analise profunda ou decisao arquitetural. A diferenca em uma semana de uso intenso e de uma ordem de grandeza na fatura.",
+  "model": "sonnet",
+  "_niveis": {
+    "acceptEdits": "RECOMENDADO para começar. Lê, escreve e edita arquivos sem perguntar; comandos de terminal fora da lista 'allow' ainda pedem confirmação.",
+    "bypassPermissions": "Não pergunta nada, exceto o que está em 'deny'. Use quando já confiar no fluxo e tiver git no projeto.",
+    "auto": "Um classificador aprova o rotineiro e bloqueia o perigoso. Depende da versão/plano do Claude Code; se não existir, cai no padrão."
+  },
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Skill(*)",
+      "WebFetch(*)",
+      "WebSearch(*)",
+      "NotebookEdit(*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git branch*)",
+      "Bash(git checkout -b *)",
+      "Bash(git stash*)",
+      "Bash(ls*)",
+      "Bash(cat *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(pwd)",
+      "Bash(echo *)",
+      "Bash(mkdir *)",
+      "Bash(python3 *)",
+      "Bash(node *)",
+      "Bash(npm run *)",
+      "Bash(npm test*)",
+      "Bash(npx *)",
+      "Bash(pip3 install *)",
+      "Bash(curl -s *)",
+      "Bash(bash ~/cortex/scripts/*)",
+      "Bash(bash ~/consciousness/scripts/*)",
+      "Bash(bash ~/broadcast/*)",
+      "Bash(python3 ~/cortex/scripts/*)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(git push --force*)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard*)",
+      "Bash(git branch -D *)",
+      "Bash(git clean -f*)",
+      "Bash(*DROP TABLE*)",
+      "Bash(*DROP DATABASE*)",
+      "Bash(*DROP SCHEMA*)",
+      "Bash(git checkout -- .)",
+      "Bash(git restore .)",
+      "Bash(sudo rm *)",
+      "Bash(*> /dev/sd*)"
+    ]
+  },
+  "language": "português brasileiro",
+  "effortLevel": "high",
+  "alwaysThinkingEnabled": true,
+  "_hooks": "Os hooks do pacote so rodam se estiverem registrados aqui — o install.sh copia os arquivos para ~/.claude/hooks/ mas o registro e este bloco. O mais importante e o router.py em UserPromptSubmit: e ele que injeta, a cada mensagem, o briefing do agente, as notas do CORTEX, as heuristicas ja validadas e as rules on-demand que casam com o assunto. Sem o router, o vault e as 35 rules on-demand existem no disco mas nunca chegam ao modelo, e o loop de aprendizado nao fecha. Paths com ~ funcionam.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/router.py submit"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/context-coach.py"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/dispatch-write-edit.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/dispatch-bash.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/autonomy-gate.py gate"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/model-watchdog.py"
+          }
+        ]
+      },
+      {
+        "matcher": "MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/freeze.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash|TaskUpdate|Task|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/consciousness-auto.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|Agent|TaskCreate|TaskUpdate",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/trajectory-logger.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Skill|Task|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/usage-telemetry.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/autonomy-gate.py learn"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/router.py stop"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/preflight-stop.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/heuristic-loop-stop.py"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/session-bootstrap.py"
+          }
+        ]
+      }
+    ]
+  },
+  "_autonomia": "autonomy-gate.py: leitura livre; escrita/git-local/scripts/pacotes/build liberam sozinhos após 5 execuções OK sem falha (livro-razão ~/.claude/.autonomy-ledger.json); produção/rede/dinheiro sempre pergunta; destrutivo nunca. AUTONOMY_MODE=off desliga. Com defaultMode acceptEdits, o gate é quem decide o terminal.",
+  "_contexto": "context-coach.py: pontua cada pedido nos 5 elementos (objetivo, entrega, onde, critério de pronto, restrições). Tarefa com <=2/5 faz o agente perguntar as faltas e, uma vez por sessão, dizer que a forma de pedir limita a entrega (rule context-quality.md)."
+}

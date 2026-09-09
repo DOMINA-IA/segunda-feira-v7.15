@@ -1,0 +1,67 @@
+# =============================================================================
+# schedule.yaml — EXEMPLO. Substitua pelos SEUS jobs antes de instalar.
+#
+# Este arquivo é a fonte de verdade dos agendamentos: `sf-schedule-install.sh`
+# o renderiza em systemd timers (Persistent=true + OnFailure -> alerta).
+# Job novo = uma linha aqui + reinstalar. Nunca crontab direto: crontab não
+# registra o que falhou nem re-dispara o que perdeu a janela.
+#
+# COMO USAR
+#   1. edite os jobs abaixo para os seus
+#   2. defina RUN_USER no seu .env (usuário de serviço que executa os jobs)
+#   3. bash framework/runtime/sf-schedule-install.sh
+#
+# ATENÇÃO: os jobs abaixo são ILUSTRATIVOS e apontam para scripts que existem
+# no pacote. Se você adicionar um job cujo `run` aponte para arquivo ausente,
+# o timer é criado e falha 100% das vezes ao disparar — sem erro na instalação.
+# Confira o caminho antes.
+# =============================================================================
+
+defaults:
+  user: ${RUN_USER}          # definido no .env — nunca root, use conta de serviço
+  timezone: America/Sao_Paulo
+  persistent: true           # se a máquina estava desligada, roda ao ligar
+  on_failure: notify         # falha dispara alerta em vez de morrer em silêncio
+
+jobs:
+  # --- Consolidação noturna da memória -------------------------------------
+  # Único escritor de heuristics.jsonl. Se você rodar o framework em mais de
+  # uma máquina, apenas UMA deve ter este job: dois escritores corrompem o pool.
+  - id: consolidate
+    description: Promove heurísticas validadas e aplica decay temporal
+    schedule: "23:30"
+    run: /bin/bash $HOME/consciousness/scripts/consolidate.sh
+    log: consolidate.log
+
+  - id: build-briefings
+    description: Regenera os briefings por agente a partir do vault
+    schedule: "23:45"
+    run: /bin/bash $HOME/cortex/scripts/build-briefings.sh
+    log: build-briefings.log
+
+  # --- Saúde do framework ---------------------------------------------------
+  - id: framework-health
+    description: Confronta a constituição com o estado real da máquina
+    schedule: "Mon 08:00"
+    run: python3 $HOME/framework/scripts/framework_health_check.py
+    log: framework-health.log
+
+  # --- Higiene --------------------------------------------------------------
+  - id: mailbox-ttl
+    description: Expira mensagens antigas do mailbox inter-agente
+    schedule: "23:20"
+    run: /bin/bash $HOME/broadcast/scripts/mailbox-ttl.sh
+    log: mailbox-ttl.log
+
+  # --- Exemplos comentados: descomente e adapte -----------------------------
+  #
+  # - id: meu-relatorio-semanal
+  #   description: O que fizer sentido para a sua operação
+  #   schedule: "Mon 09:00"
+  #   run: /bin/bash $HOME/scripts/meu-relatorio.sh
+  #   log: meu-relatorio.log
+  #
+  # - id: meu-monitor
+  #   schedule: "*:0/30"        # a cada 30 minutos
+  #   run: python3 $HOME/scripts/monitor.py
+  #   log: monitor.log

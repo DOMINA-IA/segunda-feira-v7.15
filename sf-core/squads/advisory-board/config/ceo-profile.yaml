@@ -1,0 +1,215 @@
+# ═══════════════════════════════════════════════════════════════════
+# CEO Behavioral Profile — DNA Mental
+# Usado para calibrar conselheiros: similar vs. contrário
+# Baseado na abordagem do Alan Nicolas (Conclave)
+# ═══════════════════════════════════════════════════════════════════
+
+ceo:
+  name: ${CEO_NAME}
+  company: DOMINA.IA
+  role: CEO & Fundador
+  sector: Ferramentas com IA, mentoria, eventos
+
+  # ─────────────────────────────────────────────────────
+  # DISC — Dominance, Influence, Steadiness, Compliance
+  # ─────────────────────────────────────────────────────
+  disc:
+    primary: D    # Dominância — direto, decisivo, orientado a resultados
+    secondary: C  # Conformidade — analítico, preciso, orientado a qualidade
+    profile: DC
+    characteristics:
+      strengths:
+        - Direto e sem rodeios
+        - Orientado a resultados mensuráveis
+        - Analítico e metódico
+        - Toma decisões rápidas quando tem dados
+        - Alta tolerância a pressão
+        - Independente — prefere fazer sozinho
+      challenges:
+        - Pode ser impaciente com processos lentos
+        - Comunicação pode parecer agressiva
+        - Tendência a complicar sistemas elegantes
+        - Dificuldade em delegar (prefere autonomia total)
+        - Baixa tolerância para ineficiência
+      communication_style:
+        - Fala palavrão, comunicação crua e direta
+        - Não gosta de enrolação
+        - Prefere dados a opiniões
+        - Responde bem a desafios diretos
+        - Não precisa de validação emocional
+
+  # ─────────────────────────────────────────────────────
+  # ENEAGRAMA
+  # ─────────────────────────────────────────────────────
+  enneagram:
+    type: 5       # O Investigador
+    wing: 6       # O Lealista
+    profile: 5w6
+    description: |
+      Tipo 5 com asa 6: Analítico, curioso, sistemático. Busca entender
+      profundamente antes de agir. A asa 6 traz cautela e lealdade.
+      Precisa se sentir competente e preparado. Valoriza conhecimento
+      como fonte de segurança.
+    core_motivation: Competência e compreensão profunda
+    core_fear: Ser incapaz ou ignorante
+    growth_direction: Integra para 8 (assertividade, ação decisiva)
+    stress_direction: Desintegra para 7 (dispersão, impulsividade)
+    at_best:
+      - Visionário que transforma conhecimento em ação
+      - Capaz de ver padrões que outros não veem
+      - Independente mas leal aos compromissos
+    at_worst:
+      - Se isola para "estudar mais" em vez de agir
+      - Paralisia por análise
+      - Desconfiança excessiva
+
+  # ─────────────────────────────────────────────────────
+  # BIG FIVE (OCEAN)
+  # ─────────────────────────────────────────────────────
+  big_five:
+    openness:
+      score: high
+      description: Curioso, criativo, aberto a novas ideias e tecnologias
+    conscientiousness:
+      score: high
+      description: Organizado, disciplinado, orientado a metas
+    extraversion:
+      score: medium
+      description: Equilibrado — consegue liderar mas recarrega sozinho
+    agreeableness:
+      score: low
+      description: Direto, confrontativo quando necessário, não evita conflito
+    neuroticism:
+      score: low
+      description: Emocionalmente estável, resiliente sob pressão
+
+  # ─────────────────────────────────────────────────────
+  # MBTI
+  # ─────────────────────────────────────────────────────
+  mbti:
+    type: INTJ    # O Arquiteto
+    description: |
+      Estrategista nato. Pensa em sistemas, não em tarefas.
+      Visão de longo prazo. Independente e autodeterminado.
+      Prefere eficiência a harmonia. Valoriza competência acima de tudo.
+    cognitive_functions:
+      dominant: Ni    # Intuição Introvertida — visão estratégica
+      auxiliary: Te   # Pensamento Extrovertido — organização lógica
+      tertiary: Fi    # Sentimento Introvertido — valores internos
+      inferior: Se    # Sensação Extrovertida — ação no presente
+
+  # ─────────────────────────────────────────────────────
+  # ESTILO DE LIDERANÇA
+  # ─────────────────────────────────────────────────────
+  leadership:
+    style: Estratégico-Direto
+    decision_making:
+      approach: First principles + data-driven
+      speed: Rápido quando tem dados, cauteloso quando não tem
+      risk_tolerance: Moderada a alta (testa rápido, falha rápido)
+    communication:
+      tone: Direto, sem filtro, usa palavrão
+      preference: Autonomia máxima — fazer sozinho
+      dislikes:
+        - Reuniões longas sem conclusão
+        - Perguntas que já estão respondidas no contexto
+        - Enrolação e validação excessiva
+        - Processos burocráticos desnecessários
+    values:
+      - Eficiência e resultado
+      - Conhecimento profundo
+      - Independência
+      - Inovação prática (não teórica)
+      - Lealdade e compromisso
+
+  # ─────────────────────────────────────────────────────
+  # COMO OS CONSELHEIROS DEVEM SE COMPORTAR
+  # ─────────────────────────────────────────────────────
+  advisor_calibration:
+    always:
+      - Ser direto — não enrolar, ir ao ponto
+      - Usar dados e frameworks, não opiniões genéricas
+      - Desafiar quando necessário, sem medo de confronto
+      - Registrar decisões para follow-up posterior
+      - Falar em português brasileiro
+    never:
+      - Validação emocional vazia ("você está indo muito bem!")
+      - Respostas genéricas sem contexto do negócio
+      - Evitar confronto para manter harmonia
+      - Perguntar o que já está disponível no contexto
+      - Subestimar a capacidade do CEO
+
+# ═══════════════════════════════════════════════════════════════════
+# GRUPOS DE CONSELHEIROS — Similar vs. Contrário
+# ═══════════════════════════════════════════════════════════════════
+
+groups:
+
+  similar:
+    description: |
+      Conselheiros que pensam de forma SIMILAR ao CEO.
+      Perfis analíticos, systems-thinkers, diretos, independentes.
+      Reforçam e refinam o raciocínio natural do ${CEO_NAME}.
+      Usam frameworks lógicos, modelos mentais, first principles.
+    advisors:
+      - id: charlie-munger
+        icon: "🧠"
+        match_reason: "Mesmo perfil analítico-racional. Inversão e modelos mentais combinam com 5w6 INTJ."
+      - id: naval-ravikant
+        icon: "⚡"
+        match_reason: "First principles + leverage. Pensa em sistemas e liberdade como o ${CEO_NAME}."
+      - id: ray-dalio
+        icon: "📈"
+        match_reason: "Princípios codificados + diagnóstico de causa raiz. Mesma mentalidade sistemática."
+      - id: peter-thiel
+        icon: "🚀"
+        match_reason: "Contrarian thinking + monopoly. Visão estratégica de longo prazo como INTJ."
+      - id: alex-hormozi
+        icon: "💰"
+        match_reason: "Execução bruta + offers + escala. DC no DISC, direto como o ${CEO_NAME}. $100M mindset."
+
+  contrarian:
+    description: |
+      Conselheiros que pensam de forma DIFERENTE do CEO.
+      Desafiam a visão analítica com perspectivas de pessoas,
+      propósito, vulnerabilidade, simplicidade e missão.
+      São o contraponto necessário para decisões mais completas.
+    advisors:
+      - id: simon-sinek
+        icon: "🎯"
+        match_reason: "Propósito e pessoas. Desafia o foco excessivo em resultados sem 'why'."
+      - id: brene-brown
+        icon: "💛"
+        match_reason: "Vulnerabilidade e coragem. Confronta a tendência DC de evitar emoções."
+      - id: patrick-lencioni
+        icon: "👥"
+        match_reason: "Dinâmica de times. Desafia a tendência de fazer tudo sozinho."
+      - id: derek-sivers
+        icon: "🎵"
+        match_reason: "Simplicidade radical. Desafia a tendência 5w6 de complicar sistemas."
+      - id: reid-hoffman
+        icon: "🌐"
+        match_reason: "Network effects + blitzscaling. Desafia a independência com poder de rede."
+      - id: yvon-chouinard
+        icon: "🏔️"
+        match_reason: "Missão > lucro. Desafia o foco em resultados financeiros puros."
+
+# ═══════════════════════════════════════════════════════════════════
+# DECISION TRACKING — Follow-up de decisões
+# ═══════════════════════════════════════════════════════════════════
+
+decision_tracking:
+  enabled: true
+  log_file: "data/decision-log.yaml"
+  follow_up:
+    default_days: 30
+    reminder_format: |
+      📋 FOLLOW-UP: Decisão #{id} tomada em {data}
+      Decisão: {resumo}
+      Conselheiros consultados: {advisors}
+      Recomendação: {recommendation}
+
+      → O que aconteceu desde então?
+      → O resultado foi o esperado?
+      → O que aprendemos?
+  review_frequency: "Mensal — revisar todas as decisões em aberto"

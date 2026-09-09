@@ -1,0 +1,201 @@
+# SPARC-SDC Workflow
+# Adaptado do ruflo-sparc + integrado com SDC do Segunda-feira.
+# Substitui o SDC linear por 5 quality gates obrigatórios.
+#
+# Uso: @pm *workflow sparc-sdc start --feature {nome}
+# Status: @pm *workflow sparc-sdc status --feature {nome}
+# Avançar: @pm *workflow sparc-sdc advance --feature {nome}
+
+id: sparc-sdc
+name: SPARC-Enhanced Story Development Cycle
+version: 1.0
+absorbed_from: ruflo-sparc plugin (5-phase methodology)
+date: 2026-05-24
+authority: "@pm orchestrator | @sf-master final say"
+
+# Memory namespaces (criados em ~/cortex/vault/_namespaces/)
+namespaces:
+  state: sparc-state         # current phase per feature
+  phases: sparc-phases       # artifacts per phase
+  gates: sparc-gates         # gate check history
+  patterns: patterns         # cross-feature learnings
+
+phases:
+
+  # ════════════════════════════════════════
+  - id: 1
+    name: Specification
+    owner: "@spec-engineer"
+    model_default: sonnet
+    inputs:
+      - epic_id (from @pm)
+      - business_context (from CEO)
+    outputs:
+      - spec-{slug}.md in namespace sparc-phases
+    gate_criteria:
+      - "≥3 acceptance criteria explícitos (Given/When/Then)"
+      - "≥2 edge cases com comportamento esperado"
+      - "Constraints técnicos + business + regulatory listados"
+      - "Non-goals declarados"
+      - "Data contracts (input/output schemas)"
+      - "Stakeholders identificados"
+    on_pass: advance to phase 2
+    on_fail: return to @pm with gap report
+
+  # ════════════════════════════════════════
+  - id: 2
+    name: Pseudocode
+    owner: "@architect"  # com sub-task de pseudocode
+    model_default: sonnet
+    inputs:
+      - spec-{slug}.md
+    outputs:
+      - pseudocode-{slug}.md in namespace sparc-phases
+    gate_criteria:
+      - "Pseudocode cobre TODOS os AC da spec"
+      - "Error paths explícitos (try/catch, validation, edge cases)"
+      - "Complexidade algorítmica anotada"
+      - "Data structures + state transitions documentados"
+    on_pass: advance to phase 3
+    on_fail: return to @spec-engineer (spec gap) OR refine pseudocode
+
+  # ════════════════════════════════════════
+  - id: 3
+    name: Architecture
+    owner: "@architect"
+    model_default: sonnet
+    inputs:
+      - spec-{slug}.md
+      - pseudocode-{slug}.md
+    outputs:
+      - adr-{slug}.md in namespace sparc-phases
+      - docs/architecture/decisions/adr-{slug}.md (canonical ADR)
+    gate_criteria:
+      - "ADR endereça TODAS as constraints da spec"
+      - "API contracts tipados (request/response schemas)"
+      - "Module boundaries com dependency direction rules"
+      - "Zero circular dependencies"
+      - "DDD invariants documentados (se aplicável)"
+      - "Persistence/caching/messaging decididos"
+    on_pass: advance to phase 4
+    on_fail: refine architecture, optionally revisit pseudocode
+
+  # ════════════════════════════════════════
+  - id: 4
+    name: Refinement
+    owner: ["@dev", "@tester"]  # paralelo
+    model_default: sonnet
+    inputs:
+      - spec-{slug}.md
+      - pseudocode-{slug}.md
+      - adr-{slug}.md
+    outputs:
+      - implementation (code files per ADR)
+      - test suite (per @tester, TDD Red→Green→Refactor)
+      - coverage report
+    gate_criteria:
+      - "TODOS os AC da spec têm ≥1 teste correspondente (traceability matrix)"
+      - "Test coverage ≥80% (lines + branches)"
+      - "Suite verde (npm test / pytest)"
+      - "Lint + typecheck verdes"
+      - "Code review pass (sem critical issues do @qa preview)"
+      - "Performance thresholds da spec atingidos (NFRs)"
+    on_pass: advance to phase 5
+    on_fail: identify gap (code OR test) → return to owner
+
+  # ════════════════════════════════════════
+  - id: 5
+    name: Completion
+    owner: "@qa"
+    model_default: sonnet
+    inputs:
+      - all artifacts from phases 1-4
+    outputs:
+      - completion-report-{slug}.md in namespace sparc-phases
+      - traceability matrix (AC ↔ test ↔ code)
+    gate_criteria:
+      - "Full regression suite verde"
+      - "Cada AC linkado a teste passing"
+      - "API docs + usage examples gerados"
+      - "Deployment checklist verificado (migrations, configs, feature flags)"
+      - "Documentation review pass"
+      - "EROS verdict score ≥4/5"
+    on_pass: handoff to @devops for push/deploy
+    on_fail: bug fix loop (max 3 ciclos) → escalar para @sf-master se persistir
+
+# ════════════════════════════════════════
+# Cross-phase hooks (executados automaticamente)
+# ════════════════════════════════════════
+hooks:
+  pre_phase:
+    - "Load all artifacts from previous phases (memory retrieve)"
+    - "Set sparc-state.current_phase = N"
+  post_phase:
+    - "Store artifact in sparc-phases namespace"
+    - "Record gate result in sparc-gates namespace"
+    - "If pass: emit signal SPARC_PHASE_COMPLETED"
+    - "If fail: emit signal SPARC_GATE_FAILED with gap report"
+  on_complete:
+    - "Train pattern: record successful trajectory in `patterns` namespace"
+    - "Update @architect briefing with new ADR"
+    - "Record episode in consciousness (success/valence +)"
+
+# ════════════════════════════════════════
+# Failure handling
+# ════════════════════════════════════════
+failure_recovery:
+  max_gate_attempts: 3
+  escalation:
+    - level: 1
+      after_attempts: 2
+      action: "Notify @sf-master via mailbox"
+    - level: 2
+      after_attempts: 3
+      action: "Halt workflow, require CEO intervention"
+
+# ════════════════════════════════════════
+# Multi-LLM routing por fase (economia)
+# ════════════════════════════════════════
+model_routing:
+  phase_1_spec:
+    primary: sonnet
+    extraction_subtasks: haiku   # extract requirements from raw text
+  phase_2_pseudocode:
+    primary: sonnet
+  phase_3_architecture:
+    primary: sonnet
+    deep_decisions: opus         # apenas decisões arquiteturais críticas
+  phase_4_refinement:
+    primary: sonnet
+    test_boilerplate: haiku
+    parallel_execution: codex_dual_mode  # ruflo pattern para velocidade
+  phase_5_completion:
+    primary: sonnet
+    documentation_gen: haiku
+  embeddings: onnx_local_384d    # $0, busca semântica cross-namespace
+
+# ════════════════════════════════════════
+# Quando usar SPARC-SDC vs SDC tradicional
+# ════════════════════════════════════════
+trigger_conditions:
+  use_sparc_when:
+    - "Feature complex (>5 files modified)"
+    - "New module/service"
+    - "Breaking API change"
+    - "Security-critical change"
+    - "First feature in new client project"
+  use_traditional_sdc_when:
+    - "Single-file bug fix"
+    - "Typo/docs update"
+    - "Config-only change"
+    - "Refactor sem impacto em contrato"
+
+# ════════════════════════════════════════
+# Integração com sistemas existentes
+# ════════════════════════════════════════
+integrates_with:
+  - rule: eros-quality.md       # 5 portões mapeiam diretamente
+  - rule: agent-authority.md    # @devops faz push após phase 5
+  - rule: confidence-guardrails.md  # AC tem confidence; baixo = VERIFICAR
+  - workflow: traditional sdc   # fallback para features simples
+  - hook: eros-gate.py          # valida gates automaticamente

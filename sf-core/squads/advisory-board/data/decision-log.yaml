@@ -1,0 +1,37 @@
+# ═══════════════════════════════════════════════════════════════════
+# Decision Log — Registro de Decisões do Advisory Board
+# Conselheiros registram decisões aqui para follow-up posterior
+# ═══════════════════════════════════════════════════════════════════
+
+metadata:
+  created: "2026-03-17"
+  version: "1.0.0"
+  description: "Log de decisões tomadas com auxílio do Advisory Board"
+  ceo: ${CEO_NAME}
+  company: DOMINA.IA
+
+# Template para novas decisões:
+# - id: DEC-{NNN}
+#   date: "YYYY-MM-DD"
+#   question: "Pergunta estratégica original"
+#   context: "Contexto do momento da decisão"
+#   advisors_consulted:
+#     similar: [munger, naval]
+#     contrarian: [sinek, brene]
+#   perspectives:
+#     agreement: "O que os conselheiros concordaram"
+#     disagreement: "Onde divergiram"
+#     key_insight: "Insight mais valioso da sessão"
+#   decision: "Decisão tomada pelo CEO"
+#   rationale: "Por que escolheu esse caminho"
+#   expected_outcome: "O que espera que aconteça"
+#   follow_up_date: "YYYY-MM-DD"
+#   status: open | reviewed | closed
+#   review:
+#     date: "YYYY-MM-DD"
+#     outcome: "O que realmente aconteceu"
+#     learning: "O que aprendemos"
+#     score: 1-10 (qualidade da decisão em retrospecto)
+
+decisions: []
+# As decisões serão adicionadas aqui conforme sessões de conselho forem realizadas

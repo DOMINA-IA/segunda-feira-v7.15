@@ -1,0 +1,65 @@
+name: advisory-board
+version: "2.0.0"
+short-title: "Advisory Board — Conclave do CEO"
+description: |
+  Board de 12 conselheiros estratégicos calibrados pelo DNA mental do CEO
+  (DISC DC, Eneagrama 5w6, MBTI INTJ). Dividido em grupo SIMILAR
+  (pensam como o CEO) e grupo CONTRÁRIO (desafiam a visão).
+  Inclui decision log com follow-up para cobrar resultados.
+  Baseado na abordagem do Alan Nicolas (Conclave).
+author: "Synkra AIOS"
+license: MIT
+slashPrefix: "advisory-board"
+
+aios:
+  minVersion: "4.0.0"
+  type: squad
+
+tags:
+  - strategy
+  - investment
+  - leadership
+  - mental-models
+  - scaling
+  - purpose
+  - entrepreneurship
+  - behavioral-profile
+  - decision-tracking
+  - conclave
+
+components:
+  agents:
+    - board-chair.md
+    # Similar Group (pensam como o CEO)
+    - charlie-munger.md
+    - naval-ravikant.md
+    - ray-dalio.md
+    - peter-thiel.md
+    - alex-hormozi.md
+    # Contrarian Group (desafiam a visão)
+    - simon-sinek.md
+    - brene-brown.md
+    - patrick-lencioni.md
+    - derek-sivers.md
+    - reid-hoffman.md
+    - yvon-chouinard.md
+  tasks:
+    - council-session.md
+    - decision-review.md
+    - convene-board.md
+    - diagnose.md
+    - evaluate-scaling.md
+    - get-founder-counsel.md
+    - resolve-culture-crisis.md
+    - review.md
+    - seek-investment-counsel.md
+  workflows:
+    - wf-board-meeting.yaml
+    - wf-decision-framework.yaml
+  checklists:
+    - output-quality.md
+
+config:
+  extends: extend
+  ceo_profile: config/ceo-profile.yaml
+  decision_log: data/decision-log.yaml

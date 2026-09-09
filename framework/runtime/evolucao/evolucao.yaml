@@ -1,0 +1,75 @@
+# =============================================================================
+# evolucao.yaml — Ciclo de Evolução: o framework aprende e melhora os próprios agentes.
+#
+# Decisão CEO 07-Set-2026: "quero que ele aprenda sozinho e melhore os agentes sozinho".
+# Dois modelos em papéis opostos (quem escreve não julga), freios fixos, tudo em git.
+#
+# Ciclo semanal (VPS, domingo 06:00 BRT):
+#   observar  → observe.py junta a semana (episódios, refutações, alertas, uso, correções)
+#   diagnosticar → papel ADVERSÁRIO: hipóteses com evidência (qual agente/skill/rule, por quê)
+#   propor    → papel CONSTRUTOR: até N diffs, 1 arquivo cada, com métrica e prompts de replay
+#   testar    → bateria + health + replay (antigo × novo) julgado por quem NÃO escreveu
+#   publicar  → patch + veredito + digest Telegram em framework/observations/evolucao/<data>/
+#   adotar    → Mac aplica o patch aprovado no próximo sync (git commit) e envia à VPS
+# =============================================================================
+
+papeis:
+  adversario:   # diagnostica e julga o replay
+    preferido: codex        # codex exec -m <modelo>
+    modelo: gpt-6-astra
+    fallback: claude        # se codex não estiver instalado/autenticado neste host
+    fallback_modelo: opus
+  construtor:   # propõe o diff
+    preferido: claude       # claude -p --model <modelo>
+    modelo: sonnet
+  replay_executor:          # roda o prompt antigo × novo
+    preferido: claude
+    modelo: sonnet
+
+freios:
+  max_propostas_por_ciclo: 3
+  max_arquivos_por_proposta: 1
+  max_linhas_alteradas: 120
+  min_replays_por_proposta: 5
+  min_vitorias_para_adotar: 3          # de 5 replays, o novo tem de vencer >= 3 e nunca perder > 1
+  max_derrotas_para_adotar: 1
+  ciclos_com_aprovacao_humana: 4       # depois disso, risco baixo adota sozinho
+  # O ciclo só pode propor mudança DENTRO destes caminhos (relativos a $HOME):
+  caminhos_permitidos:
+    - .claude/agents/meta/
+    - .claude/agents/ops/
+    - .claude/skills/
+    - .claude/commands/segunda-feira/agents/
+    - cortex/vault/rules/
+  # …e NUNCA nestes (segurança, permissão, credencial, o próprio ciclo):
+  caminhos_proibidos:
+    - .claude/rules/
+    - cortex/vault/rules/agent-authority
+    - cortex/vault/rules/credentials-handling
+    - cortex/vault/rules/data-lookup-safety
+    - cortex/vault/rules/verificacao-honesta
+    - .claude/settings
+    - .claude/hooks/
+    - _secrets/
+    - framework/runtime/
+    - framework/scripts/
+    - consciousness/scripts/
+
+metricas:
+  # "melhor" tem de ser definido ANTES da mudança. O construtor escolhe UMA por proposta.
+  - id: taxa_sucesso_episodios
+    fonte: consciousness/memory/episodic/*.jsonl · outcome.result por agente
+  - id: correcoes_do_ceo
+    fonte: transcripts (só no Mac) · mensagens do usuário com "não|errado|refaz|de novo" após entrega do agente
+  - id: heuristicas_refutadas
+    fonte: heuristics.jsonl · times_failed por agente
+  - id: alertas_por_job
+    fonte: autonomous/notifications/sent · title contém o job
+  - id: roteamento
+    fonte: framework/tests/run-routing-battery.py
+  - id: julgamento_replay
+    fonte: juiz cruzado, 5 prompts reais do passado
+
+saida:
+  base: framework/observations/evolucao      # sincronizado VPS → Mac
+  digest: telegram                            # via notify() do dispatcher

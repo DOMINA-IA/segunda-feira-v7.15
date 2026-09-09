@@ -1,0 +1,1 @@
+ops/copy-squad.md

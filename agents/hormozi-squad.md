@@ -1,0 +1,1 @@
+ops/hormozi-squad.md

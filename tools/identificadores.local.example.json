@@ -1,0 +1,85 @@
+{
+  "_leia": [
+    "Este arquivo declara os identificadores PRIVADOS de quem usa o framework,",
+    "para que o gate (validate-publish.py) e o sanitizador (sanitize-v715.py)",
+    "consigam detectá-los antes de qualquer publicação.",
+    "",
+    "COMO USAR:",
+    "  cp identificadores.local.example.json identificadores.local.json",
+    "  # preencha com os SEUS dados e salve",
+    "",
+    "O arquivo 'identificadores.local.json' está no .gitignore e NUNCA deve ser",
+    "publicado — ele é, por natureza, a lista do que você quer esconder.",
+    "",
+    "POR QUE ESTE ARQUIVO EXISTE:",
+    "Um gate precisa conhecer o que procura. Se os seus hostnames, o formato das",
+    "suas senhas e os nomes dos seus clientes ficarem escritos dentro do próprio",
+    "gate, e o gate for distribuído junto com o pacote, você publica exatamente o",
+    "dossiê que estava tentando proteger. Foi o que aconteceu na preparação da",
+    "v7.15 e o motivo desta separação.",
+    "",
+    "O gate funciona sem este arquivo: ele já traz dezenas de padrões GENÉRICOS",
+    "(senha atribuída, token de API, chave privada, CPF, CNPJ, IP, e-mail...).",
+    "O arquivo local só acrescenta o que é específico de você."
+  ],
+
+  "senhas_conhecidas": [
+    "ExemploSenha@2026",
+    "OutraSenha123"
+  ],
+
+  "hosts": [
+    "203.0.113.10",
+    "198.51.100.25"
+  ],
+
+  "hostnames": [
+    "srv000000",
+    "meu-servidor"
+  ],
+
+  "usuarios": [
+    "u000000000",
+    "meu-usuario-ssh"
+  ],
+
+  "dominios": [
+    "meudominio.com.br"
+  ],
+
+  "emails": [
+    "eu@meudominio.com.br"
+  ],
+
+  "handles": [
+    "meuhandle",
+    "meu.instagram"
+  ],
+
+  "nome_legal": [
+    "NOME COMPLETO DA PESSOA"
+  ],
+
+  "telefones": [
+    "5541900000000"
+  ],
+
+  "clientes": [
+    "Cliente Um",
+    "Cliente Dois S.A."
+  ],
+
+  "pessoas": [
+    "Nome De Contato",
+    "Outro Contato"
+  ],
+
+  "ids_plataforma": [
+    "123456789012345",
+    "AW-000000000/XXXXXXXXXXX"
+  ],
+
+  "outros": [
+    "qualquer string literal que nunca pode sair daqui"
+  ]
+}

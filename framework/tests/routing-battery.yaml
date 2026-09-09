@@ -1,0 +1,121 @@
+# routing-battery.yaml — Sprint 3, Grupo E (Fechar o ciclo)
+#
+# Bateria de 24 casos reais do negócio DOMINA.IA para medir assertividade do
+# roteamento skill/agente. Cada caso é um pedido como o CEO realmente digitaria,
+# com a lista de candidatos aceitáveis (skill sem prefixo ou @agente) e o motivo
+# em 1 linha, baseado nas descriptions REAIS lidas do frontmatter em disco
+# (pós-Sprint 2, gatilhos novos no padrão "Use quando... NOT for...").
+#
+# Consumido por run-routing-battery.py — ver cabeçalho daquele script para as
+# limitações do matching heurístico (não é um simulador do modelo real).
+
+- pedido: "Cria uma campanha nova no Meta Ads pra esse anúncio, já sobe direto na API"
+  esperado: ["campaign-builder", "@traffic"]
+  motivo: "campaign-builder cria campanhas Meta Ads via API a partir de um briefing; @traffic também cria/escala campanhas."
+
+- pedido: "Roda a gestão diária das campanhas e pausa o que estiver com CPL ruim"
+  esperado: ["traffic-autopilot", "@traffic"]
+  motivo: "traffic-autopilot monitora performance e pausa/duplica campanhas automaticamente pelas regras Sobral/Hormozi."
+
+- pedido: "Preciso do roteiro completo de uma VSL de 20 minutos pro challenge, quero um dos copywriters lendários"
+  esperado: ["@copy-squad"]
+  motivo: "copy-squad é indicado para peças de copy longas/complexas como VSL, roteando a um especialista lendário."
+
+- pedido: "Escreve a copy desse anúncio pra Instagram, preciso do texto pronto pra publicar hoje"
+  esperado: ["@copywriter"]
+  motivo: "@copywriter escreve o texto final de ads/posts pronto pra publicar — headline, corpo, CTA."
+
+- pedido: "Monta uma oferta irresistível pra mentoria, com stack de valor, bônus e garantia"
+  esperado: ["@offer-engineer"]
+  motivo: "@offer-engineer usa frameworks Hormozi ($100M Offers) para criar ofertas com stack de valor, garantias e bônus."
+
+- pedido: "Faz um diagnóstico completo do negócio inteiro — oferta, leads, pricing, tudo pelos frameworks do Hormozi"
+  esperado: ["@hormozi-squad"]
+  motivo: "hormozi-squad cobre diagnóstico multi-domínio de negócio com os 16 agentes especializados de Hormozi."
+
+- pedido: "Preciso estruturar um design system completo com biblioteca de componentes pro produto"
+  esperado: ["@design-squad"]
+  motivo: "design-squad é indicado para design systems completos, atomic design e specs de componentes."
+
+- pedido: "Me dá o briefing visual e a direção de arte desse post de Instagram"
+  esperado: ["@creative-director"]
+  motivo: "@creative-director cria briefing visual, direção de arte e definição de ângulo/formato de criativo."
+
+- pedido: "Analisa os dados das últimas campanhas e me dá um relatório executivo com os insights"
+  esperado: ["@analyst"]
+  motivo: "@analyst transforma dados brutos de campanha em insights acionáveis e relatórios executivos."
+
+- pedido: "Pesquisa o que os concorrentes de mentoria de IA estão fazendo agora no mercado brasileiro"
+  esperado: ["@market-intel"]
+  motivo: "@market-intel faz pesquisa de mercado, análise competitiva e tendências do nicho IA/mentoria no Brasil."
+
+- pedido: "A landing page está com um botão que não faz nada, o CTA parou de funcionar"
+  esperado: ["lp-audit", "lp-live-debug"]
+  motivo: "lp-live-debug diagnostica CTA com função trocada em LP em produção; lp-audit cobre CTAs funcionais antes do deploy."
+
+- pedido: "A landing page está carregando devagar, preciso otimizar o peso e a velocidade dela"
+  esperado: ["lp-audit"]
+  motivo: "lp-audit (trilha performance) diagnostica peso, LCP e render-blocking. Fundida com lp-performance-audit em 05-Set-2026."
+
+- pedido: "Gera um vídeo com o avatar e a voz do ${CEO_NAME} falando essa copy"
+  esperado: ["video-avatar", "@video-producer"]
+  motivo: "video-avatar Modo 1 é o pipeline HeyGen+ElevenLabs do clone do ${CEO_NAME}. Fundida com criar-video-avatar em 05-Set-2026."
+
+- pedido: "Quero criar um personagem de influenciadora de IA do zero, sem gravar nada real"
+  esperado: ["video-avatar"]
+  motivo: "video-avatar cria influencer virtual do zero (GROK/Whisk/Nano Banana) — 'personagem de IA do zero'."
+
+- pedido: "Preciso criar uma skill nova reutilizável pra automatizar essa rotina"
+  esperado: ["skill-creator"]
+  motivo: "skill-creator cria novas skills reutilizáveis seguindo os padrões do framework."
+
+- pedido: "Essa decisão é estratégica e tem trade-offs difíceis, quero múltiplas perspectivas antes de decidir"
+  esperado: ["@mestre-do-conselho"]
+  motivo: "mestre-do-conselho orquestra deliberação multi-perspectiva para decisões estratégicas com trade-offs não óbvios."
+
+- pedido: "Vamos estruturar o Challenge Funnel completo pela metodologia do Fábio Soares, os 5 dias e o pitch"
+  esperado: ["@fabio-soares", "@challenge-funnel"]
+  motivo: "challenge-funnel é dono da mecânica dos 5 dias/pitch; fabio-soares encarna a metodologia como mentor consultivo."
+
+- pedido: "Publica essa landing page atualizada no servidor da Hostinger"
+  esperado: ["deploy-hostinger"]
+  motivo: "deploy-hostinger faz deploy de arquivos estáticos (LPs) para o servidor Hostinger via SCP e verifica com curl."
+
+- pedido: "Me dá um resumo rápido de como está o negócio hoje, um briefing executivo"
+  esperado: ["daily-briefing", "daily-scan"]
+  motivo: "daily-briefing consolida observações num briefing executivo de até 20 linhas; daily-scan varre e gera briefing diário."
+
+- pedido: "Chegaram os números novos da campanha, registra esses resultados no feedback loop"
+  esperado: ["feed-results"]
+  motivo: "feed-results importa resultados reais de Meta Ads/Instagram/WhatsApp para o feedback loop."
+
+- pedido: "Cria a próxima story a partir desse épico pro time de dev"
+  esperado: ["@sm"]
+  motivo: "sm (River) é o Scrum Master responsável pela criação de user stories a partir do PRD/épico."
+
+- pedido: "Valida essa story antes do dev começar, confere os critérios de aceite"
+  esperado: ["@po"]
+  motivo: "po (Pax) valida refinamento de backlog, critérios de aceite e prioridade das stories."
+
+- pedido: "Esse erro é intermitente e ninguém sabe por que acontece, precisa investigar a causa raiz"
+  esperado: ["investigate"]
+  motivo: "investigate faz debugging sistemático com causa-raiz obrigatória para bug sem causa óbvia ou erro intermitente."
+
+- pedido: "Atualiza a documentação viva do negócio, o mapa de ofertas mudou"
+  esperado: ["user-model", "@sf-master"]
+  motivo: "Documentação viva do negócio vive no CORTEX (user-model) sob governança do @sf-master. magic-docs foi descartada em 05-Set-2026; o caso passou a testar o destino real, não a skill morta."
+
+# ── Controles negativos (05-Set-2026): pedidos que NÃO devem cair em skill ──
+# esperado ["-"] = passa se nenhuma skill aparece no top-3 (só agentes ou nada).
+- pedido: "bom dia, tudo bem? me lembra o que a gente decidiu ontem sobre o evento"
+  esperado: ["-"]
+  motivo: "Conversa + memória de sessão. Skill aqui é overhead."
+- pedido: "corrige o typo na linha 40 do server.js"
+  esperado: ["-"]
+  motivo: "Fix trivial de 1 arquivo — /plan-first e /investigate seriam overhead (NOT for das próprias skills)."
+- pedido: "qual o saldo da conta do CLIENTE_EXEMPLO hoje?"
+  esperado: ["-"]
+  motivo: "Consulta operacional direta ao CLIENTE_EXEMPLO; nenhuma skill cobre e nenhuma deveria casar."
+- pedido: "manda um oi no whatsapp pro ${PESSOA} da CLIENTE_EXEMPLO"
+  esperado: ["-"]
+  motivo: "Ação pontual; whatsapp-specialist/mia-manager tratam fluxos e a Mia do CLIENTE_EXEMPLO, não recado avulso."

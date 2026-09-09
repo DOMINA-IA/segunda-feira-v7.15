@@ -1,0 +1,93 @@
+# Weekly Operations Review Workflow
+# Run every Sunday morning alongside content generation
+# Triggered by: @ops-monitor or manually via *weekly-review
+
+name: Weekly Operations Review
+id: weekly-ops-review
+trigger: '*weekly-review'
+schedule: 'Sundays 9:00 AM (after content-studio weekly run)'
+owner: ops-monitor (Sentinel)
+
+description: |
+  Complete weekly operational review of all 11 projects.
+  Checks infrastructure, bugs, tokens, syncs, and generates
+  action items for the coming week.
+
+phases:
+  - phase: 1
+    name: Infrastructure Health
+    agent: ops-monitor
+    task: health-check.md
+    description: |
+      Full PM2 status, RAM, disk, DB connections check.
+      Flags anomalies and sends alerts for critical issues.
+    output: health-report.json
+    duration_estimate: 2min
+
+  - phase: 2
+    name: Token Lifecycle
+    agent: ops-monitor
+    task: token-lifecycle.md
+    description: |
+      Verify all API tokens across systems.
+      Auto-extend Meta tokens if expiring.
+      Alert for any expired/expiring credentials.
+    output: token-report.json
+    duration_estimate: 1min
+
+  - phase: 3
+    name: Sync Verification
+    agent: ops-monitor
+    task: null  # Inline check
+    description: |
+      Verify Eduzz, Asaas, Meta syncs ran successfully.
+      Check for data gaps or sync failures.
+      Trigger manual sync if needed.
+    checks:
+      - last_eduzz_sync < 24h
+      - last_asaas_sync < 24h
+      - no sync errors in last 7 days
+    duration_estimate: 1min
+
+  - phase: 4
+    name: Project Review
+    agent: ops-monitor
+    task: project-review.md
+    description: |
+      Recalculate health scores.
+      Check SLA compliance for all open bugs.
+      Generate prioritized action list.
+    output: project-review.json
+    duration_estimate: 3min
+
+  - phase: 5
+    name: Weekly Report
+    agent: ops-monitor
+    task: null  # Inline generation
+    description: |
+      Compile all phase outputs into weekly summary.
+      Send via Telegram for mobile review.
+      Update Command Center dashboard.
+    output: weekly-report.md
+    telegram: true
+    duration_estimate: 1min
+
+total_duration: ~8min
+automated: true  # Can run fully autonomous
+
+output_format: |
+  📋 WEEKLY OPS REVIEW — {date}
+  ═══════════════════════════════
+
+  🏥 INFRA: {overall_status}
+  🔑 TOKENS: {token_status}
+  🔄 SYNCS: {sync_status}
+  📊 PROJECTS: {avg_health}/10
+  🐛 BUGS: {open} open | {overdue} overdue
+
+  🎯 TOP 3 AÇÕES DA SEMANA:
+  1. {action_1}
+  2. {action_2}
+  3. {action_3}
+
+  Score Geral: {overall_score}/10

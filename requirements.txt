@@ -1,0 +1,4 @@
+# Dependências Python do framework Segunda-feira
+# Instalar: pip3 install -r requirements.txt
+PyYAML>=6.0
+requests>=2.28

@@ -1,0 +1,59 @@
+# Tech Spec Template (Quick Flow)
+# Target: 900-1600 tokens — lean, implementation-ready
+
+template:
+  name: tech-spec
+  type: quick-flow
+  description: Lean technical specification for quick flow development
+
+sections:
+  - id: title
+    label: "Tech Spec Title"
+    format: "# Tech Spec: {title}"
+
+  - id: problem
+    label: "Problem"
+    description: "1-2 sentences describing the problem or need"
+    max_words: 50
+
+  - id: approach
+    label: "Approach"
+    description: "Technical approach as bullet points"
+    format: "bullet_list"
+    items:
+      - "Key design decisions"
+      - "Integration points"
+      - "Technology choices"
+
+  - id: tasks
+    label: "Tasks"
+    description: "Implementation tasks with testable criteria"
+    format: "checklist"
+    item_format: "- [ ] {task_description} — {testable_criteria}"
+    min_items: 2
+    max_items: 8
+
+  - id: edge_cases
+    label: "Edge Cases"
+    description: "Edge cases and how to handle them"
+    format: "bullet_list"
+    min_items: 2
+
+  - id: acceptance_criteria
+    label: "Acceptance Criteria"
+    description: "Given/When/Then format"
+    format: "gwt"
+    item_format: "- Given {context}, When {action}, Then {expected_result}"
+    min_items: 2
+
+  - id: files_affected
+    label: "Files Affected"
+    description: "Files that will be created or modified"
+    format: "bullet_list"
+    item_format: "- `{file_path}` — {change_description}"
+
+validation:
+  single_goal: true  # Reject specs with "and" splitting goals
+  testable_criteria: true  # Every task must have testable criteria
+  no_time_estimates: true  # Never include time estimates
+  token_range: [900, 1600]  # Target spec size

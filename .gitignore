@@ -1,0 +1,120 @@
+# =============================================================
+# Segunda-feira v7.15 — .gitignore
+#
+# PRINCIPIO: ignora DADOS, nunca ESTRUTURA.
+# O pacote distribui o motor (scripts, rules, agentes, templates).
+# A memoria (vault preenchido, episodios, resultados) e de cada um
+# e nunca entra no repositorio.
+#
+# ATENCAO: um padrao amplo demais (ex.: "cortex/vault/" ou "tools/")
+# remove componentes essenciais do pacote SEM erro visivel — o gate
+# valida o filesystem, mas o git publicaria outra coisa. Ao editar,
+# rode:  git add -An . | grep -c ''   e confira os contadores.
+# =============================================================
+
+# --- Segredos (nunca, em hipotese alguma) ---
+.env
+.env.*
+!.env.example
+*.env
+_secrets/
+credentials/
+secrets/
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+
+# --- Config local da maquina ---
+settings.local.json
+.claude/settings.local.json
+
+# --- Runtime / build ---
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.DS_Store
+*.log
+logs/
+*.bak
+*.bak.*
+
+# --- MEMORIA: estrutura entra (.gitkeep), conteudo nao ---
+# CORTEX: distribuimos scripts, templates e as rules on-demand.
+# O vault de notas do usuario fica de fora.
+cortex/vault/*
+!cortex/vault/.gitkeep
+!cortex/vault/rules/
+!cortex/vault/meta/
+!cortex/vault/ops/
+!cortex/vault/infra/
+!cortex/vault/decisions/
+!cortex/vault/feedback/
+!cortex/vault/patterns/
+!cortex/vault/user-model/
+cortex/vault/meta/*
+cortex/vault/ops/*
+cortex/vault/infra/*
+cortex/vault/decisions/*
+cortex/vault/feedback/*
+cortex/vault/patterns/*
+cortex/vault/user-model/*
+!cortex/vault/*/.gitkeep
+
+cortex/index/*
+!cortex/index/.gitkeep
+cortex/briefings/*
+!cortex/briefings/.gitkeep
+cortex/inbox/*
+!cortex/inbox/.gitkeep
+cortex/sessions/
+cortex/sessions.db
+cortex/pulse/
+cortex/reports/
+cortex/backups/
+cortex/*.jsonl
+
+# Consciousness: scripts entram, episodios nao
+consciousness/memory/episodic/*
+!consciousness/memory/episodic/.gitkeep
+consciousness/memory/procedural/
+consciousness/memory/consolidation/
+consciousness/metacognition/*
+!consciousness/metacognition/.gitkeep
+consciousness/workspace/*
+!consciousness/workspace/.gitkeep
+consciousness/proposals/*
+!consciousness/proposals/.gitkeep
+consciousness/backups/
+consciousness/curator-reports/
+
+# Nervous system: scripts e semente entram, trafego nao
+broadcast/mailbox/*
+!broadcast/mailbox/.gitkeep
+
+# Feedback loop e observacoes: sempre dados
+feedback-loop/
+observations/
+daily-scan-*.md
+clientes/
+projetos/
+
+# ATENCAO: "user-model/" solto aqui engolia tambem skills/user-model/ —
+# o padrao sem barra inicial casa em QUALQUER nivel. Um componente sumia
+# do pacote sem erro nenhum. Ancorar no caminho exato do dado:
+/cortex/vault/user-model/*
+!/cortex/vault/user-model/.gitkeep
+
+# --- Backups de instalacao ---
+.segunda-feira-backup-*/
+
+# --- Identificadores privados do usuario (NUNCA publicar) ---
+# Este arquivo E a lista do que voce quer esconder. Se vazar, entrega tudo
+# de uma vez. O .example fica versionado como modelo; o .json real, nunca.
+tools/identificadores.local.json
+identificadores.local.json
