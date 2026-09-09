@@ -96,6 +96,26 @@ chmod 600 .env
 python3 framework/scripts/framework_health_check.py
 ```
 
+### Já tem uma versão anterior instalada?
+
+Use `upgrade.sh` em vez de `install.sh`:
+
+```bash
+git clone <url-do-repo> segunda-feira && cd segunda-feira
+bash upgrade.sh
+```
+
+A diferença importa. O `install.sh` nunca sobrescreve arquivo seu — o que é
+certo numa instalação nova e errado num upgrade: as 14 rules que a v7.15
+consolidou continuariam carregando junto com as 5 novas (contexto **maior**
+que antes), e o `settings.json` antigo ficaria sem o router registrado — com
+o CORTEX e as heurísticas no disco sem nunca chegarem ao modelo.
+
+O `upgrade.sh` faz backup de tudo, remove só o que virou obsoleto, mescla o
+`settings.json` preservando as suas permissões, e **verifica se o motor ficou
+ligado** — não apenas se os arquivos foram copiados. Sua memória (vault,
+episódios, patterns) não é tocada.
+
 O health check deve rodar limpo. Ele é a sua verificação de que a instalação de fato
 existe na máquina, e não apenas na documentação.
 
