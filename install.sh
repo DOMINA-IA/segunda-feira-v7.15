@@ -157,9 +157,14 @@ fi
 step "6. Configuracao"
 if [[ -f "$SRC/settings.template.json" ]]; then
     if [[ -f "$CLAUDE_DIR/settings.json" ]]; then
-        cp "$SRC/settings.template.json" "$CLAUDE_DIR/settings.segunda-feira.json"
-        warn "settings.json ja existe — template salvo como settings.segunda-feira.json"
-        warn "  mescle a mao (permissoes + registro dos hooks)"
+        # Quem ja usa o Claude Code sempre tem este arquivo. Sem mesclar, a instalacao
+        # termina com zero hooks: sem router, sem gates, sem memoria — e sem aviso.
+        mkdir -p "$BACKUP_DIR"
+        cp "$CLAUDE_DIR/settings.json" "$BACKUP_DIR/settings.json"
+        ok "settings.json existente preservado em $BACKUP_DIR/settings.json"
+        python3 "$SRC/tools/merge-settings.py" "$CLAUDE_DIR/settings.json" \
+            "$SRC/settings.template.json" "$BACKUP_DIR" \
+            || warn "mescla do settings.json falhou — rode: bash upgrade.sh"
     else
         cp "$SRC/settings.template.json" "$CLAUDE_DIR/settings.json"
         ok "settings.json criado (permissoes + hooks registrados)"

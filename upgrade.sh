@@ -152,64 +152,7 @@ ok "sua memoria (vault, episodios, patterns) NAO foi tocada"
 step "5. settings.json — mesclagem"
 # Aqui esta o item que o install.sh nao resolve: sem o router registrado, o
 # CORTEX e as rules on-demand existem no disco e nunca chegam ao modelo.
-python3 - "$CLAUDE_DIR/settings.json" "$SRC/settings.template.json" "$BACKUP" <<'PYEOF'
-import json, sys, os, shutil
-
-atual_p, novo_p, backup = sys.argv[1], sys.argv[2], sys.argv[3]
-
-try:
-    novo = json.load(open(novo_p, encoding="utf-8"))
-except Exception as e:
-    print(f"  ! nao consegui ler o template ({e})"); sys.exit(0)
-
-if not os.path.exists(atual_p):
-    shutil.copy(novo_p, atual_p)
-    print("  ✓ settings.json criado a partir do template")
-    sys.exit(0)
-
-try:
-    atual = json.load(open(atual_p, encoding="utf-8"))
-except Exception:
-    shutil.copy(atual_p, os.path.join(backup, "settings.json.ilegivel"))
-    shutil.copy(novo_p, atual_p)
-    print("  ! settings.json anterior estava ilegivel — substituido (copia no backup)")
-    sys.exit(0)
-
-mudou = []
-
-# hooks: o bloco da v7.15 substitui inteiro. Mesclar item a item produz
-# duplicata (o mesmo hook registrado 2x) e deixa hook morto de versao antiga.
-if atual.get("hooks") != novo.get("hooks"):
-    atual["hooks"] = novo["hooks"]
-    mudou.append("hooks (router, gates, coach) registrados")
-
-# model: sem isto, herda-se o modelo mais caro por padrao
-if not atual.get("model"):
-    atual["model"] = novo.get("model", "sonnet")
-    mudou.append(f'model = "{atual["model"]}"')
-
-# permissoes: uniao — o que voce liberou continua liberado
-pa = atual.setdefault("permissions", {})
-pn = novo.get("permissions", {})
-for chave in ("allow", "deny", "ask"):
-    if chave in pn:
-        antes = list(pa.get(chave, []))
-        pa[chave] = list(dict.fromkeys(antes + pn[chave]))
-        if len(pa[chave]) != len(antes):
-            mudou.append(f"permissions.{chave}: +{len(pa[chave]) - len(antes)}")
-
-for chave in ("language", "effortLevel", "alwaysThinkingEnabled"):
-    if chave in novo and chave not in atual:
-        atual[chave] = novo[chave]
-        mudou.append(chave)
-
-json.dump(atual, open(atual_p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-if mudou:
-    for m in mudou:
-        print(f"  ✓ {m}")
-else:
-    print("  ✓ settings.json ja estava atualizado")
-PYEOF
+python3 "$SRC/tools/merge-settings.py" "$CLAUDE_DIR/settings.json" "$SRC/settings.template.json" "$BACKUP"
 
 # --------------------------------------------------------------------------
 step "6. CLAUDE.md — a constituicao"
