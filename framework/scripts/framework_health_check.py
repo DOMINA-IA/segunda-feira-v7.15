@@ -22,7 +22,7 @@ import sys
 from pathlib import Path
 
 HOME = Path.home()
-ON_VPS = Path("/opt/segunda-feira").exists() and not Path.home() / "Library".exists()  # runtime (VPS) vs dev (Mac)
+ON_VPS = Path("/opt/segunda-feira").exists() and not (Path.home() / "Library").exists()  # runtime (VPS) vs dev (Mac)
 CHECKS = []  # (nível, nome, detalhe)  nível ∈ {OK, WARN, FAIL, SKIP}
 
 # ── Instalacao nova vs operacao em regime ────────────────────────────────────
