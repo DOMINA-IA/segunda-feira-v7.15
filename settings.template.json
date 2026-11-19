@@ -62,13 +62,7 @@
       "Bash(git checkout -- .)",
       "Bash(git restore .)",
       "Bash(sudo rm *)",
-      "Bash(*> /dev/sd*)",
-      "Read(**/.env)",
-      "Read(//**/.env)",
-      "Read(**/.env.local)",
-      "Read(//**/.env.local)",
-      "Read(**/.env.production)",
-      "Read(//**/.env.production)"
+      "Bash(*> /dev/sd*)"
     ]
   },
   "language": "português brasileiro",

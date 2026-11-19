@@ -13,8 +13,11 @@ Apontadas por um aluno que instalou o pacote no Windows e documentou o que encon
   comandos (`cat`, `grep`, `head`, `Get-Content`...) que imprimem um `.env`. Antes, com
   `Read(*)` e `cat *` liberados, um agente que abrisse o `.env` jogava as chaves na conversa
   e no histórico local. O uso que não imprime o valor continua livre (`source`,
-  `VAR=$(grep ... | cut -d= -f2-)`, `cut -d= -f1`). `settings.template.json` ganhou `deny`
-  de leitura de `.env`. A rule `credentials-handling` deixou de mandar `grep` no `.env`.
+  `VAR=$(grep ... | cut -d= -f2-)`, `cut -d= -f1`). A rule `credentials-handling` deixou de
+  mandar `grep` no `.env`. Uma primeira versão desta correção também punha `deny` de
+  `Read(**/.env)` no `settings.template.json`; foi retirada no mesmo dia, porque a regra
+  bloqueava no Bash até o uso seguro que o hook recomenda. Quem instalou nesse intervalo pode
+  apagar as entradas `Read(...env...)` de `permissions.deny` no `~/.claude/settings.json`.
 - **`install.sh` mescla o `settings.json` existente** (rotina única em
   `tools/merge-settings.py`, a mesma do `upgrade.sh`). Antes salvava o template ao lado e a
   instalação terminava com zero hooks para quem já usava o Claude Code.
