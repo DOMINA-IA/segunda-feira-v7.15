@@ -22,7 +22,11 @@
 Antes de perguntar ao CEO qualquer credencial, executar OBRIGATORIAMENTE:
 ```bash
 python3 ~/cortex/scripts/cortex_engine.py query "credenciais <serviço>"
-grep -ri "<serviço>" ~/cortex/vault/infra/ ~/_secrets/ ~/.env ~/projetos/utm-manager/.env 2>/dev/null
+# Nunca imprima o VALOR: a saída do comando entra na conversa e no histórico local.
+# (env-guard.py bloqueia cat/grep/Read de .env desde 19-Nov-2026.)
+grep -ri "<serviço>" ~/cortex/vault/infra/ 2>/dev/null          # notas-ponteiro
+grep -ril "<serviço>" ~/_secrets/ 2>/dev/null                    # -l: só o NOME do arquivo
+cut -d= -f1 ~/.env ~/projetos/utm-manager/.env 2>/dev/null | grep -i "<serviço>"   # só o NOME da variável
 ```
 Só após confirmar ausência em TODAS as fontes, perguntar ao CEO — depois ingerir a resposta no CORTEX como ponteiro (nunca o segredo em texto).
 

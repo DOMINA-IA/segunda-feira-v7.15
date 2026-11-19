@@ -43,6 +43,9 @@ HOOKS_DIR = Path.home() / ".claude" / "hooks"
 #   2) matcher "Bash"                      -> careful.py
 STAGES = [
     HOOKS_DIR / "model-watchdog.py",
+    # env-guard (19-Nov-2026): "deny" em comando que imprime .env; antes do careful,
+    # porque o primeiro estágio que decide encerra a cadeia e deny vale mais que ask.
+    HOOKS_DIR / "env-guard.py",
     HOOKS_DIR / "careful.py",
 ]
 

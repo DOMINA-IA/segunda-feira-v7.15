@@ -62,7 +62,13 @@
       "Bash(git checkout -- .)",
       "Bash(git restore .)",
       "Bash(sudo rm *)",
-      "Bash(*> /dev/sd*)"
+      "Bash(*> /dev/sd*)",
+      "Read(**/.env)",
+      "Read(//**/.env)",
+      "Read(**/.env.local)",
+      "Read(//**/.env.local)",
+      "Read(**/.env.production)",
+      "Read(//**/.env.production)"
     ]
   },
   "language": "português brasileiro",
@@ -122,6 +128,15 @@
           {
             "type": "command",
             "command": "python3 ~/.claude/hooks/freeze.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Grep|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/env-guard.py"
           }
         ]
       }

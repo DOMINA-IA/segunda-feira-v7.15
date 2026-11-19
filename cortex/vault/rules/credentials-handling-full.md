@@ -143,10 +143,11 @@ python3 ~/cortex/scripts/cortex_engine.py query "credenciais <serviço>"
 grep -ri "<serviço>" ~/cortex/vault/infra/ 2>/dev/null
 
 # 3. Busca no diretório de secrets
-grep -ri "<serviço>" ~/_secrets/ 2>/dev/null
+grep -ril "<serviço>" ~/_secrets/ 2>/dev/null   # -l: só o NOME do arquivo, nunca o conteúdo
 
 # 4. Busca no .env local
-grep -ri "<serviço>" ~/.env ~/projetos/utm-manager/.env 2>/dev/null
+cut -d= -f1 ~/.env ~/projetos/utm-manager/.env 2>/dev/null | grep -i "<serviço>"   # só o NOME da variável
+# Nunca imprima o VALOR (env-guard.py bloqueia cat/grep/Read de .env desde 19-Nov-2026).
 ```
 
 Só após confirmar que NÃO existe em nenhuma dessas fontes, pedir ao CEO.
