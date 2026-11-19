@@ -5,6 +5,32 @@ Registro público das versões distribuídas. Detalhes operacionais internos
 
 ---
 
+## Correções sobre a v7.15 (novembro/2026, ainda sem número de versão)
+
+Apontadas por um aluno que instalou o pacote no Windows e documentou o que encontrou.
+
+- **Segredos fora da conversa.** Hook novo `env-guard.py`: bloqueia `Read`, `Grep` e
+  comandos (`cat`, `grep`, `head`, `Get-Content`...) que imprimem um `.env`. Antes, com
+  `Read(*)` e `cat *` liberados, um agente que abrisse o `.env` jogava as chaves na conversa
+  e no histórico local. O uso que não imprime o valor continua livre (`source`,
+  `VAR=$(grep ... | cut -d= -f2-)`, `cut -d= -f1`). `settings.template.json` ganhou `deny`
+  de leitura de `.env`. A rule `credentials-handling` deixou de mandar `grep` no `.env`.
+- **`install.sh` mescla o `settings.json` existente** (rotina única em
+  `tools/merge-settings.py`, a mesma do `upgrade.sh`). Antes salvava o template ao lado e a
+  instalação terminava com zero hooks para quem já usava o Claude Code.
+- **`consciousness-auto.py` lê `tool_response`.** Lia `tool_output`, que o Claude Code não
+  envia: commit, teste e push nunca viravam episódio. Corrigida também a condição de commit,
+  que disparava com qualquer saída contendo "file changed".
+- **Agenda de exemplo.** `schedule.yaml` usava `schedule:` e o instalador lê `when:`
+  (KeyError); o job `mailbox-ttl` apontava para script que não existe no pacote.
+- **`router.py` sobrevive sem PyYAML** (avisa e segue sem as rules on-demand).
+- **`framework_health_check.py`**: precedência corrigida na detecção `ON_VPS`.
+
+Ainda aberto: gates de comando destrutivo não cobrem a ferramenta PowerShell; chamadas a
+`python3`/`bash` pelo nome e caminhos POSIX embutidos (compatibilidade com Windows).
+
+---
+
 ## v7.15 — "Contexto é orçamento" (setembro/2026)
 
 Versão de **subtração**. O framework aprendeu que crescer somando componentes
