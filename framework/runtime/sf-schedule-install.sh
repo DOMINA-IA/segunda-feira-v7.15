@@ -46,6 +46,10 @@ jobs = yaml.safe_load(open(yml))["jobs"]
 units = Path(units)
 wanted = set()
 for j in jobs:
+    if "when" not in j and "schedule" in j:
+        j["when"] = j["schedule"]   # exemplo publicado até 19-Nov-2026 usava `schedule:`
+    if "when" not in j:
+        sys.exit(f"job '{j.get('id','?')}' sem `when:` (horário OnCalendar ou `daemon`) em {yml}")
     uid = f"sf-{j['id']}"; wanted.add(uid)
     run = j["run"].replace("$HOME", home)
     log = j.get("log", f"{j['id']}.log")

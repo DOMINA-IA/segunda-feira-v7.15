@@ -18,7 +18,10 @@ import sys
 import os
 import json
 import re
-import yaml
+try:
+    import yaml
+except ImportError:      # sem PyYAML o router continua: só as rules on-demand ficam fora
+    yaml = None
 from pathlib import Path
 
 BRAIN_HOME = Path.home() / "brain"
@@ -206,7 +209,10 @@ def handle_submit(prompt):
         # Score = nº de triggers que batem no prompt → seleção determinística por
         # relevância em vez da ordem não-determinística do glob() do filesystem.
         rules_dir = CORTEX_HOME / "vault" / "rules"
-        if rules_dir.exists():
+        if yaml is None:
+            parts.append((3, "[router] PyYAML ausente: rules on-demand desligadas. "
+                             "Rode: python3 -m pip install PyYAML"))
+        elif rules_dir.exists():
             try:
                 candidates = []
                 for rf in rules_dir.glob("*.md"):
