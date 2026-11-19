@@ -163,6 +163,28 @@ def detect_from_task_tool(tool_name: str, tool_input, tool_output: str):
     return True
 
 
+def normalizar_saida(resp) -> str:
+    """Saída da ferramenta como texto, venha como dict (Bash), lista (Task/Agent) ou str."""
+    if resp is None:
+        return ""
+    if isinstance(resp, str):
+        return resp
+    if isinstance(resp, dict) and ("stdout" in resp or "stderr" in resp):
+        return f"{resp.get('stdout') or ''}\n{resp.get('stderr') or ''}".strip()
+    try:
+        return json.dumps(resp, ensure_ascii=False)
+    except (TypeError, ValueError):
+        return str(resp)
+
+
+def extrair_mensagem_commit(comando: str) -> str:
+    """Primeira linha da mensagem de um `git commit -m ...` (aspas simples, duplas ou heredoc)."""
+    m = re.search(r"-m\s+\"\$\(cat\s+<<-?\s*['\"]?\w+['\"]?\s*\n\s*(.+)", comando)
+    if not m:
+        m = re.search(r"-m\s+\"([^\"\n]+)", comando) or re.search(r"-m\s+'([^'\n]+)", comando)
+    return m.group(1).strip()[:100] if m else "commit realizado"
+
+
 def detect_from_tool_output(tool_name: str, tool_input: str, tool_output: str):
     """Detecta padrões significativos no output da ferramenta."""
 
@@ -173,10 +195,10 @@ def detect_from_tool_output(tool_name: str, tool_input: str, tool_output: str):
     output_lower = tool_output.lower() if tool_output else ""
 
     # git commit bem sucedido
-    if "git commit" in input_lower and "create mode" in output_lower or "file changed" in output_lower:
-        # Extrair mensagem do commit
-        commit_match = re.search(r'-m\s+["\'](.+?)["\']', tool_input)
-        msg = commit_match.group(1)[:100] if commit_match else "commit realizado"
+    # Parênteses obrigatórios: sem eles, qualquer saída com "file changed" (git pull,
+    # git diff --stat) virava "commit" mesmo sem `git commit` no comando.
+    if "git commit" in input_lower and re.search(r"create mode|files? changed", output_lower):
+        msg = extrair_mensagem_commit(tool_input)
         record_episode(
             agent="@dev",
             ep_type="task_completed",
@@ -236,7 +258,13 @@ def main():
         data = json.loads(raw)
         tool_name = data.get("tool_name", "")
         tool_input = json.dumps(data.get("tool_input", {})) if isinstance(data.get("tool_input"), dict) else str(data.get("tool_input", ""))
-        tool_output = str(data.get("tool_output", ""))
+        # O Claude Code envia a saída em `tool_response` (dict no Bash: stdout/stderr).
+        # Até 19-Nov-2026 este hook lia `tool_output`, que nunca vem: a saída era sempre
+        # vazia e commit/teste/push nunca viravam episódio. `tool_output` fica de fallback.
+        tool_output = normalizar_saida(data.get("tool_response", data.get("tool_output", "")))
+        comando = ""
+        if isinstance(data.get("tool_input"), dict):
+            comando = str(data["tool_input"].get("command", "") or "")
 
         # Salvar contexto combinado para detecção de agente (usado por detect_active_agent)
         combined_context = f"{tool_input} {tool_output}"
@@ -251,7 +279,7 @@ def main():
             return
 
         # Tentar detectar do output (Bash)
-        detect_from_tool_output(tool_name, tool_input, tool_output)
+        detect_from_tool_output(tool_name, comando or tool_input, tool_output)
 
     except Exception:
         # Hook nunca deve bloquear — falha silenciosa
